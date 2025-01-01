@@ -1,11 +1,11 @@
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from app.routes.users import router as user_router
-from app.routes.debts import router as debt_router
+# Importando os controladores
+from app.controllers.debt import router as debt_controller
+from app.controllers.user import router as user_controller
 from app.configurations.database import create_db_and_tables
 from app.configurations.settings import settings
-
-from fastapi import FastAPI
 
 app = FastAPI(title="Gestão de Dívidas Pessoais")
 
@@ -18,12 +18,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluindo as rotas
-app.include_router(user_router, prefix="/users", tags=["Users"])
-app.include_router(debt_router, prefix="/debts", tags=["Debts"])
+# Incluindo os controladores
+app.include_router(user_controller, prefix="/users", tags=["Users"])
+app.include_router(debt_controller, prefix="/debts", tags=["Debts"])
 
 @app.on_event("startup")
 def on_startup():
+    # Criação do banco de dados e tabelas, caso ainda não existam
     create_db_and_tables()
 
 @app.get("/")
@@ -36,5 +37,5 @@ if __name__ == "__main__":
         "main:app",
         host=settings.HOST,
         port=settings.PORT,
-        reload=True
+        reload=False
     )

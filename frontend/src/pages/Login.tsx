@@ -7,23 +7,16 @@ import {
     Typography,
     Box,
     CssBaseline,
-    createTheme,
     ThemeProvider,
     Avatar,
+    Link,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { styled } from '@mui/system';
-
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#1976d2',
-        },
-    },
-    typography: {
-        fontFamily: 'Roboto, sans-serif',
-    },
-});
+import theme from '../styles/theme';
+import { login } from '../services/authService';
+import MessageModal from '../components/MessageModal';
+import { useNavigate } from 'react-router-dom';
 
 const StyledContainer = styled(Container)({
     display: 'flex',
@@ -49,16 +42,31 @@ const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { isAuthenticated, setIsAuthenticated } = useAuth();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            // Simular login
+            const credentials = { username: email, password };
+            const response = await login(credentials);
+            localStorage.setItem('token', response.access_token);
             setIsAuthenticated(true);
-            localStorage.setItem('token', 'dummy-token');
+            navigate("/home");
         } catch (error) {
             console.error('Erro ao realizar login', error);
+            setErrorMessage('Erro ao realizar login. Verifique suas credenciais e tente novamente.');
+            setModalOpen(true);
         }
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const handleRegisterRedirect = () => {
+        navigate('/register'); // Direciona para a página de registro
     };
 
     return (
@@ -108,8 +116,26 @@ const Login: React.FC = () => {
                         >
                             Entrar
                         </Button>
+                        <Typography variant="body2" align="center" sx={{ mt: 2, color: '#000' }}>
+                            Não possui uma conta?{' '}
+                            <Link
+                                component="button"
+                                variant="body2"
+                                onClick={handleRegisterRedirect}
+                                sx={{ color: 'primary.main', fontWeight: 'bold' }}
+                            >
+                                Registre-se aqui
+                            </Link>
+                        </Typography>
                     </Box>
                 </StyledBox>
+                <MessageModal
+                    open={modalOpen}
+                    onClose={handleCloseModal}
+                    title="Falha de Autenticação"
+                    message={errorMessage}
+                    buttonName="Log In"
+                />
             </StyledContainer>
         </ThemeProvider>
     );

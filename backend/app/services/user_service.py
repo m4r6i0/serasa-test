@@ -1,5 +1,10 @@
 # services/user_service.py
+from datetime import datetime, timedelta
+
+from jose import jwt
 from sqlalchemy.orm import Session
+
+from app.configurations import settings
 from app.models.user import User
 from passlib.context import CryptContext
 from fastapi import HTTPException
@@ -32,3 +37,13 @@ def authenticate_user(db: Session, username: str, password: str):
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Credenciais inválidas")
     return user
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return encoded_jwt

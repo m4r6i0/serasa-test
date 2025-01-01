@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.configurations.database import SessionLocal
-from app.models.debt import Debt
+from app.services.debt_service import create_debt, list_debts, update_debt, delete_debt
 from app.dto.debt_dto import DebtCreate, DebtResponse
 
 router = APIRouter()
@@ -14,18 +14,18 @@ def get_db():
         yield db
     finally:
         db.close()
-
 @router.post("/create", response_model=DebtResponse)
-def create_debt(debt: DebtCreate, db: Session = Depends(get_db)):
-    new_debt = Debt(
-        title=debt.title,
-        amount=debt.amount,
-        due_date=debt.due_date,
-        status=debt.status,
-        notes=debt.notes,
-        owner_id=1  # Substituir pelo ID do usuário autenticado
-    )
-    db.add(new_debt)
-    db.commit()
-    db.refresh(new_debt)
-    return new_debt
+def create_debt_route(debt: DebtCreate, db: Session = Depends(get_db)):
+    return create_debt(db, debt)
+
+@router.get("/list", response_model=list[DebtResponse])
+def list_debts_route(db: Session = Depends(get_db)):
+    return list_debts(db)
+
+@router.put("/update/{debt_id}", response_model=DebtResponse)
+def update_debt_route(debt_id: int, debt: DebtCreate, db: Session = Depends(get_db)):
+    return update_debt(db, debt_id, debt)
+
+@router.delete("/delete/{debt_id}")
+def delete_debt_route(debt_id: int, db: Session = Depends(get_db)):
+    return delete_debt(db, debt_id)
