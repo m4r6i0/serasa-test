@@ -2,14 +2,11 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
-    primary: {
-      main: "#1976d2", // Azul
-    },
-    secondary: {
-      main: "#dc004e", // Vermelho
-    },
     background: {
-      default: "#f5f5f5", // Cinza claro para o fundo
+      default: "#f4f4f4", // Troque para uma cor mais amigável
+    },
+    primary: {
+      main: "#1976d2",
     },
   },
   typography: {
