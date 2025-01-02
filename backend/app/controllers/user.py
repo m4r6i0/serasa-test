@@ -1,20 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import timedelta
-from app.configurations.database import SessionLocal
+from app.configurations.database import get_db
 from app.configurations.settings import settings
 from app.dto.user_dto import UserCreate, UserResponse
 from app.services.user_service import register_user, authenticate_user, create_access_token
 
 router = APIRouter()
 
-# Dependência para obter o banco de dados
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/register", response_model=UserResponse)
 def register_user_endpoint(user: UserCreate, db: Session = Depends(get_db)):
