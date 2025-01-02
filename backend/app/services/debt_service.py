@@ -3,19 +3,19 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from app.dto import DebtCreate
+from app.dto import DebtCreate, DebtResponse
+from app.models import User
 from app.models.debt import Debt
 from fastapi import HTTPException
 
-def create_debt(db: Session, debt: DebtCreate):
-    print("porra")
+
+def create_debt(db: Session, debt: DebtCreate, current_user: User):
     # Remove espaços extras do título
     title = debt.title.strip()
 
-    print(title)
-
     # Verifica se já existe uma dívida com o mesmo título (case insensitive)
-    existing_debt = db.query(Debt).filter(Debt.title.ilike(f"%{title}%")).first()
+    existing_debt = db.query(Debt).filter(Debt.title.ilike(f"%{title}%"),
+                                          Debt.owner_id == current_user.id).first()
     if existing_debt:
         raise HTTPException(
             status_code=400,
@@ -23,18 +23,8 @@ def create_debt(db: Session, debt: DebtCreate):
         )
 
     # Verifica se a data de vencimento é no passado
-    try:
-        due_date_obj = datetime.strptime(debt.due_date, "%Y-%m-%d")
-        if due_date_obj < datetime.now():
-            raise HTTPException(
-                status_code=400,
-                detail="A data de vencimento não pode ser no passado."
-            )
-    except ValueError:
-        raise HTTPException(
-            status_code=400,
-            detail="A data de vencimento deve estar no formato 'YYYY-MM-DD'."
-        )
+    if debt.due_date < datetime.now().date():
+        raise HTTPException(status_code=400, detail="A data de vencimento não pode ser no passado.")
 
     # Cria e salva a nova dívida
     new_debt = Debt(
@@ -43,14 +33,33 @@ def create_debt(db: Session, debt: DebtCreate):
         due_date=debt.due_date,
         status=debt.status,
         notes=debt.notes,
+        owner_id=current_user.id
     )
     db.add(new_debt)
     db.commit()
     db.refresh(new_debt)
-    return new_debt
 
-def list_debts(db: Session):
-    return db.query(Debt).all()
+    return DebtResponse(
+        id=new_debt.id,
+        title=new_debt.title,
+        amount=new_debt.amount,
+        due_date=new_debt.due_date,
+        status=new_debt.status,
+        notes=new_debt.notes
+    )
+
+
+def list_debts(current_user: User, db: Session):
+    debts = db.query(Debt).filter(Debt.owner_id == current_user.id).all()
+    return debts
+
+
+def get_debt_by_id(debt_id: int, db: Session):
+    existing_debt = db.query(Debt).filter(Debt.id == debt_id).first()
+    if not existing_debt:
+        raise HTTPException(status_code=404, detail="Dívida não encontrada")
+    return existing_debt
+
 
 def update_debt(db: Session, debt_id: int, title: str, amount: float, due_date, status: str, notes: str):
     existing_debt = db.query(Debt).filter(Debt.id == debt_id).first()
@@ -64,6 +73,7 @@ def update_debt(db: Session, debt_id: int, title: str, amount: float, due_date, 
     db.commit()
     db.refresh(existing_debt)
     return existing_debt
+
 
 def delete_debt(db: Session, debt_id: int):
     existing_debt = db.query(Debt).filter(Debt.id == debt_id).first()

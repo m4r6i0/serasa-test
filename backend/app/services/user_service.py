@@ -1,7 +1,7 @@
 # services/user_service.py
 from datetime import datetime, timedelta
 
-from jose import jwt
+from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from app.configurations import settings
@@ -33,7 +33,7 @@ def register_user(db: Session, username: str, email: str, password: str):
     return new_user
 
 def authenticate_user(db: Session, username: str, password: str):
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(User).filter(User.email == username).first()
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Credenciais inválidas")
     return user
@@ -47,3 +47,19 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
+
+def get_current_user(token: str, db: Session):
+    """
+    Decodifica o token JWT e retorna o usuário autenticado.
+    """
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=401, detail="Token inválido")
+        user = db.query(User).filter(User.email == email).first()
+        if user is None:
+            raise HTTPException(status_code=401, detail="Usuário não encontrado")
+        return user
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Credenciais inválidas")

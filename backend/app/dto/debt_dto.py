@@ -9,6 +9,7 @@ class DebtCreate(BaseModel):
     status: str
     notes: str | None = None
 
+
 class DebtResponse(BaseModel):
     id: int
     title: str

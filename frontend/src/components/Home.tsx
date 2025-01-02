@@ -79,7 +79,7 @@ const Home: React.FC = () => {
                                     fullWidth
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => handleNavigation("/listagem-dividas")}
+                                    onClick={() => handleNavigation("/debt-list")}
                                 >
                                     Acessar
                                 </Button>
@@ -101,7 +101,7 @@ const Home: React.FC = () => {
                                     fullWidth
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => handleNavigation("/resumo-financeiro")}
+                                    onClick={() => handleNavigation("/dashboard")}
                                 >
                                     Acessar
                                 </Button>

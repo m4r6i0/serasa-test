@@ -4,8 +4,8 @@ import Login from './pages/Login';
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import DebtRegistration from './pages/DebtRegistration';
+import DebtList from './pages/DebtList';
 import Home from './components/Home';
-// Importe outras páginas se necessário
 
 const App: React.FC = () => {
     return (
@@ -16,8 +16,8 @@ const App: React.FC = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/debt-registration" element={<DebtRegistration />} />
-
-                {/* Outras rotas */}
+                <Route path="/debt-registration/:id" element={<DebtRegistration />} />
+                <Route path="/debt-list" element={<DebtList />} />
             </Routes>
         </Router>
     );

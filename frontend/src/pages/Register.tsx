@@ -12,6 +12,7 @@ import {
   Link,
 } from "@mui/material";
 import { register } from "../services/authService";
+import MessageModal from "../components/MessageModal";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +23,9 @@ const Register: React.FC = () => {
   });
 
   const [error, setError] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,11 +36,17 @@ const Register: React.FC = () => {
     e.preventDefault();
     try {
       await register(formData);
-      alert("Usuário registrado com sucesso!");
-      navigate("/login");
+      setModalTitle("Sucesso");
+      setModalMessage("Usuário registrado com sucesso!");
+      setModalOpen(true);
     } catch (err) {
       setError("Usuário já existe. Por favor, tente realizar o login.");
     }
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    navigate("/login"); // Redireciona para a página de login após fechar o modal
   };
 
   return (
@@ -113,6 +123,13 @@ const Register: React.FC = () => {
           </CardContent>
         </Card>
       </Box>
+      <MessageModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        title={modalTitle}
+        message={modalMessage}
+        buttonName="Fechar"
+      />
     </Container>
   );
 };

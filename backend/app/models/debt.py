@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from app.configurations.database import Base
 
+
 class Debt(Base):
     __tablename__ = "debts"
 
