@@ -74,7 +74,7 @@ frontend/
    ```bash
    npm start
    ```
-5. Acesse a aplicação em [http://localhost:3000](http://localhost:3000).
+5. Acesse a aplicação em [http://localhost:3000:8082](http://localhost:3000:8082).
 
 ## Funcionalidades
 - **Cadastro de Dívidas**: Inclua título, valor, data de vencimento, status e observações.
