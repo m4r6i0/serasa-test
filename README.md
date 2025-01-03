@@ -9,13 +9,13 @@ Este é um projeto de gestão de dívidas pessoais, desenvolvido para ajudar os 
 
 ## Tecnologias Utilizadas
 
-| Tecnologia | Versão | Logotipo |
-|------------|---------|----------|
-| Python     | 3.11    | ![Python](https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg) |
-| FastAPI    | 0.95.2  | ![FastAPI](https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png) |
-| React      | 18.2.0  | ![React](https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg) |
-| TypeScript | 4.9.5   | ![TypeScript](https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg) |
-| Material-UI | 5.11.15| ![Material-UI](https://v4.mui.com/static/logo.png) |
+| Tecnologia    | Versão   | Marca                                      |
+|---------------|----------|--------------------------------------------|
+| Python        | 3.11     | <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python" width="50"/> |
+| FastAPI       | 0.95.2   | <img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" alt="FastAPI" width="50"/> |
+| React         | 18.2.0   | <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" width="50"/> |
+| TypeScript    | 4.9.5    | <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" alt="TypeScript" width="50"/> |
+| Material-UI   | 5.11.15  | <img src="https://v4.mui.com/static/logo.png" alt="Material-UI" width="50"/> |
 
 ## Estrutura do Projeto
 
