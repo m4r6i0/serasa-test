@@ -9,6 +9,7 @@ import {
     MenuItem,
     ThemeProvider,
 } from "@mui/material";
+import CurrencyInput from "react-currency-input-field"; 
 import { useNavigate, useParams } from "react-router-dom";
 import MessageModal from "../components/MessageModal";
 import theme from "../styles/theme";
@@ -67,13 +68,6 @@ const DebtRegistration: React.FC = () => {
         if (!amount || parseFloat(amount.replace(",", ".")) <= 0) {
             setModalTitle("Erro");
             setModalMessage("O campo 'Valor' é obrigatório e deve ser maior que zero.");
-            setModalOpen(true);
-            return;
-        }
-
-        if (!dueDate || new Date(dueDate) < new Date()) {
-            setModalTitle("Erro");
-            setModalMessage("A data de vencimento não pode ser anterior à data atual.");
             setModalOpen(true);
             return;
         }
@@ -138,13 +132,25 @@ const DebtRegistration: React.FC = () => {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                         />
-                        <TextField
-                            fullWidth
-                            required
-                            label="Valor"
-                            margin="normal"
+                       <CurrencyInput
+                            id="amount"
+                            name="amount"
+                            placeholder="R$ 0,00"
                             value={amount || ""}
-                            onChange={(e) => setAmount(e.target.value)}
+                            decimalsLimit={2}
+                            onValueChange={(value) => setAmount(value || undefined)}
+                            prefix="R$ "
+                            style={{
+                                width: "100%",
+                                height: "56px",
+                                border: "1px solid #c4c4c4",
+                                borderRadius: "4px",
+                                fontSize: "16px",
+                                padding: "0 16px",
+                                boxSizing: "border-box",
+                                marginTop: "16px",
+                                marginBottom: "16px",
+                            }}
                         />
                         <TextField
                             fullWidth
@@ -168,6 +174,7 @@ const DebtRegistration: React.FC = () => {
                         >
                             <MenuItem value="Pendente">Pendente</MenuItem>
                             <MenuItem value="Pago">Pago</MenuItem>
+                            <MenuItem value="Atrasado">Atrasado</MenuItem>
                         </TextField>
                         <TextField
                             fullWidth

@@ -22,10 +22,6 @@ def create_debt(db: Session, debt: DebtCreate, current_user: User):
             detail=f"Dívida com o título '{title}' já existe."
         )
 
-    # Verifica se a data de vencimento é no passado
-    if debt.due_date < datetime.now().date():
-        raise HTTPException(status_code=400, detail="A data de vencimento não pode ser no passado.")
-
     # Cria e salva a nova dívida
     new_debt = Debt(
         title=title,
@@ -61,15 +57,16 @@ def get_debt_by_id(debt_id: int, db: Session):
     return existing_debt
 
 
-def update_debt(db: Session, debt_id: int, title: str, amount: float, due_date, status: str, notes: str):
+def update_debt(db: Session, debt_id: int, debt: DebtCreate):
     existing_debt = db.query(Debt).filter(Debt.id == debt_id).first()
     if not existing_debt:
         raise HTTPException(status_code=404, detail="Dívida não encontrada")
-    existing_debt.title = title
-    existing_debt.amount = amount
-    existing_debt.due_date = due_date
-    existing_debt.status = status
-    existing_debt.notes = notes
+    existing_debt.title = debt.title
+    existing_debt.amount = debt.amount
+    existing_debt.due_date = debt.due_date
+    existing_debt.status = debt.status
+    existing_debt.notes = debt.notes
+    #existing_debt.owner_id = user_id
     db.commit()
     db.refresh(existing_debt)
     return existing_debt
