@@ -95,4 +95,4 @@ frontend/
 
 
 ## Contato
-Em caso de dúvidas ou sugestões, entre em contato pelo e-mail: suporte@suasolução.com.
+Em caso de dúvidas ou sugestões, entre em contato pelo e-mail: m4r6i0@gmail.com.
